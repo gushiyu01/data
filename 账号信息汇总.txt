@@ -1,0 +1,161 @@
+微博能看到的账号信息：
+	头像
+	登录名：92***43@qq.com 
+	昵  称：我是谷世宇啊
+	真实姓名：谷世宇
+	所在地
+	性  别
+	性取向
+	感情状况
+	生日
+	血型
+	博客地址
+	个性域名
+	简介
+	注册时间
+
+联系信息
+	邮箱
+	QQ
+	MSN
+
+
+职业信息
+	◆*单位名称
+	部门/职位
+	工作时间 
+	所在地
+     
+
+教育信息
+	◆学校类型 
+	*学校名称
+	点击选择学校
+	入学时间
+	院系
+ 
+标签信息
+	你可能感兴趣的标签： +80后的尾巴 +疯子 +闷骚 +欧美控 +Food +天蝎女 +欧美音乐 +爱猫 +腐 +摄影师
+
+	
+	粉丝数|关注数|微博数
+	
+Twitter能看到的信息：
+	昵称
+	职业信息
+	博客地址
+	所在地
+	注册时间
+	粉丝数|关注数|tweets
+	头像
+	
+instagram能看到的信息：
+	昵称
+	帖子数量|粉丝数|关注数
+	desc
+	博客地址
+	
+Facebook能看到的信息
+	工作地点
+	学校资料
+	地点
+	感情状况
+	所在地和家乡
+	联系方式
+	出生日期
+	性别
+	家庭成员
+	desc
+	好友列表
+	
+YouTube能看到的信息Google account
+	基本信息：
+	名称
+	个人资料照片
+	性别
+	生日
+	联系信息：
+	邮件地址
+	联系电话
+	地址
+	聊天用户名
+	个人简介：
+	地点
+	连接
+	个人资料连接
+	做出贡献网站的连接
+	简介
+	工作和教育背景：
+	职业
+	工作经历
+		组织|职位|起止时间|备注
+	教育背景
+		学校|专业|起止时间|备注
+		
+百度贴吧能看到的信息：
+	关注的贴吧
+	关注他的人|他关注的人
+	吧龄
+	头像
+	昵称
+	礼物
+		
+	
+	账户名：	account_num
+昵称		nick_name
+真实姓名	real_name
+所在地		stay_place
+性别		gender
+婚姻状况	marriage_state
+出生年月日	birth_date
+博客地址	blog_address
+账号简介	account_desc
+注册时间	register_date
+关注数		watching_num
+被关注数	watched_num
+邮箱 		email
+联系电话	phone_num
+标签		tag
+账号类别	account_type
+工作信息	work_info
+
+	[{
+		公司		company
+		职位		job_title
+		开始时间	start_date
+		结束时间	end_date
+		备注		remark
+	},{
+		公司		company
+		职位		job_title
+		开始时间	start_date
+		结束时间	end_date
+		备注		remark
+	}]
+	公司		company
+	职位		job_title
+	开始时间	start_date
+	结束时间	end_date
+	备注		remark
+教育信息	edu_info[{school,major,start_date,end_date,remark},{}]
+	学校		school
+	专业		major
+	开始时间	start_date
+	结束时间	end_date
+	备注		remark
+	
+id
+create_date
+person_id
+del_flag
+account_type
+
+
+
+
+
+
+
+
+
+	

@@ -1,0 +1,28 @@
+1、开启防火墙 
+    systemctl start firewalld
+
+2、开放指定端口
+      firewall-cmd --zone=public --add-port=1935/tcp --permanent
+ 命令含义：
+--zone #作用域
+--add-port=1935/tcp  #添加端口，格式为：端口/通讯协议
+--permanent  #永久生效，没有此参数重启后失效
+
+3、重启防火墙
+      firewall-cmd --reload
+
+4、查看端口号
+netstat -ntlp   //查看当前所有tcp端口·
+
+netstat -ntulp |grep 1935   //查看所有1935端口使用情况
+
+nohup java -jar ***.jar > ***.log 2>&1 &
+
+nohup java -jar -Dspring.config.location=./application.yml analyse-es.jar > nohup0512.log 2>&1 &
+
+nohup java -jar ictbda-service.jar --spring.profiles.active=ictbda > message.log 2>&1 &
+
+nohup java -jar -Dspring.config.location=./application-ictbda-new.yml ictbda-service.jar > message-0522.log 2>&1 &
+
+.r.replace("http://www.ictbda.com","https://www.ictbda.cn")
+

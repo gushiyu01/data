@@ -1,0 +1,19 @@
+1、升级npm：
+	npm -v
+	npm install -g npm
+	
+2、升级node
+	# 查看版本
+	node -v 
+	# 清除npm cache
+	npm cache clean -force
+	# 安装n模块
+	npm install -g n 
+	# 不行就这样：npm install -g n -f
+	# 升级新版本（稳定版 stable ,最新版 latest ,指定版本号v8.11.1）
+	n latest
+	# 查看版本号，确认是否升级成功
+	node -v 
+	
+3、打包vue项目
+	npm run build:prod

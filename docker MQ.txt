@@ -1,0 +1,11 @@
+1、docker pull rabbitmq
+2、创建
+#方式一：默认guest 用户，密码也是 guest
+docker run -d --hostname my-rabbit --name rabbit -p 15672:15672 -p 5672:5672 rabbitmq
+
+#方式二：设置用户名和密码
+docker run -d --hostname my-rabbit --name rabbit -e RABBITMQ_DEFAULT_USER=user -e RABBITMQ_DEFAULT_PASS=password -p 15672:15672 -p 5672:5672 rabbitmq
+
+安装完成访问5672  返回 AMQP，表示成功，但是方位web管理页面15672失败；需要安装插件，才可以使用管理页面
+	进入容器执行即可：
+		rabbitmq-plugins enable rabbitmq_management

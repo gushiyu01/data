@@ -1,0 +1,19 @@
+linux 发油邮件服务
+	1、yum install mailx
+	2、vi /etc/mail.rc
+	3、添加如下
+		set from=13523511140@163.com
+		set smtp=smtp.163.com
+		set smtp-auth-user=13523511140@163.com
+		set smtp-auth-password=CMIGMQMFSDGIKTSF
+		set smtp-auth=login
+	4、完成
+	
+Ex:
+	一、邮件名称正文发送情况
+
+		echo  "内容" | mail -s "主题" 收件地址
+
+	二、带附件
+
+		echo "mysql配置文件" | mailx -s "配置信息"  -a my.cnf 923686643@qq.com

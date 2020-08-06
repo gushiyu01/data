@@ -1,0 +1,6 @@
+联机分析(OLAP)
+连接clickhouse：
+	进入服务器：
+		执行：clickhouse-client
+	使用GataGrip:
+		

@@ -1,0 +1,136 @@
+1：解压 tar -zxvf ***
+2：创建mysql用户组和用户并修改权限
+	groupadd mysql
+	useradd -r -g mysql mysql
+	
+	mkdir -p  /data/mysql              #创建目录
+	chown mysql:mysql -R /data/mysql   #赋予权限
+	
+3、/etc/my.conf
+
+	bind-address=0.0.0.0
+	port=3306
+	user=mysql
+	#安装目录。解压目录
+	basedir=/usr/local/mysql
+	#数据存放目录
+	datadir=/data/mysql
+	socket=/tmp/mysql.sock
+	#错误日志
+	log-error=/data/mysql/mysql.err
+	pid-file=/data/mysql/mysql.pid
+	
+	#character config
+	character_set_server=utf8mb4
+	
+	#支持符号链接(symbolic link)，即数据库或表可以存储在my.cnf中指定datadir之外的分区或目录 默认开启：1 关闭：0
+	symbolic-links=0
+	
+	#timestamp为null的时候，可能会报错
+	explicit_defaults_for_timestamp=true
+
+4、初始化/usr/local/mysql/bin
+	./mysqld --defaults-file=/etc/my.cnf --basedir=/usr/local/mysql/ --datadir=/data/mysql/ --user=mysql --initialize
+	默认生成的密码在：log-error=/data/mysql/mysql.err
+	
+	然后service mysql start 
+	mysql -u root -p
+	******
+	
+5、修改密码
+	SET PASSWORD = PASSWORD('123456');
+	ALTER USER 'root'@'localhost' PASSWORD EXPIRE NEVER;
+	FLUSH PRIVILEGES;
+	
+6、远程无法连接
+	
+	use mysql                                            #访问mysql库
+	update user set host = '%' where user = 'root';      #使root能再任何host访问
+	FLUSH PRIVILEGES;                                    #刷新
+
+	
+	GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY '123456' WITH GRANT OPTION;
+	指定的
+	GRANT ALL PRIVILEGES ON *.* TO 'myuser'@'192.168.1.3' IDENTIFIED BY 'mypassword' WITH GRANT OPTION;
+	
+7、启动mysql，先将mysql.server放置到/etc/init.d/mysql中
+	cp /usr/local/mysql/support-files/mysql.server /etc/init.d/mysql
+
+	ln -s  /usr/local/mysql/bin/mysql    /usr/bin
+
+	启动服务
+service mysql start　　　
+
+关闭服务
+service mysql stop　　
+
+重启服务
+service restart stop
+	
+8、创建用户(用户名：ictbda ip：%代表任意ip 密码：123456)
+	create user 'ictbda'@'%' identified by '123456';
+	授权(*.*：数据库.数据表 用户@ip 密码  WITH GRANT OPTION（表示该用户可以给别人授权）)
+	GRANT ALL PRIVILEGES ON *.* TO 'ictbda'@'%' IDENTIFIED BY '123456' WITH GRANT OPTION;
+	
+9、修改密码
+	set password for 'ictbda'@'%' = password('111111');
+	FLUSH PRIVILEGES; 
+	
+10、撤销授权
+	REVOKE privilege ON databasename.tablename FROM 'username'@'host';
+	
+11、忘记密码
+	/etc/my.conf
+	任意一行加上"skip-grant-tables"
+	然后修改密码
+	重启MySQL：
+	service mysql restart
+	此时登录不需要密码
+	use mysql;
+	update mysql.user set authentication_string=password('your new password') where user='root';
+	flush privileges;
+	
+	
+主从复制：
+master:
+	1、/etc/my.conf
+	#编号唯一
+	server-id=1
+	#开启二进制日志
+	bin-log=master-bin
+	
+	binlog-do-db=test #二进制需要同步的数据库名,如果需要同步多个库,例如要再同步 test1库,再添加一行“binlog-do-db=test1”,以此类推
+	binlog-ignore-db=mysql #禁止同步 mysql 数据库
+
+slave:
+	server-id=2
+	server2不需要去发送2进制日志给别的服务器，因此不需要打开log-bin
+	
+	replicate-do-db=redhat   #从服务器同步redhat数据库
+	replicate-ignore-db=redhat   #从服务器不同步redhat数据库
+	replicate-do-table=redhat.test   #备份redhat库中的test表
+	replicate-ignore-table=redhat.test   #不备份redhat库中的test表
+	replicate-wild-do-table=redhat.test%   
+	replicate-wild-ignore-table=redhat.test% 
+	
+3：查看master状态
+mysql> show master status;
++----------------------+----------+--------------+------------------+-------------------+
+| File                 | Position | Binlog_Do_DB | Binlog_Ignore_DB | Executed_Gtid_Set |
++----------------------+----------+--------------+------------------+-------------------+
+| master-logbin.000001 |      446 |              |                  |                   |
++----------------------+----------+--------------+------------------+-------------------+
+ 
+1 row in set (0.00 sec)
+slave
+
+连接
+mysql> change master to master_host='192.168.81.136',master_user='root',master_password='123456',master_log_file='master-bin.000001',master_log_pos=446;
+
+show slave status\G;
+start slave;
+show slave status\G;
+	
+可以创建只用来复制的用户
+create user 'dba'@'%' identified by '123456';
+grant replication slave on *.* to dba;

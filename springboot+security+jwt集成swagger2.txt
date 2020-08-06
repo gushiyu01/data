@@ -1,0 +1,125 @@
+springboot security 集成swagger2
+	1、添加依赖
+		<!-- swagger -->
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger2</artifactId>
+			<version>2.5.0</version>
+		</dependency>
+		<!-- swagger-ui -->
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger-ui</artifactId>
+			<version>2.5.0</version>
+		</dependency>
+	2、创建swagger配置类
+		@Configuration
+		@EnableSwagger2
+		public class Swagger2Config {
+			@Bean
+			public Docket createRestApi() {
+				
+				//参数构造器，可以将需要放入请求头，请求实体中的参数在此添加进去
+				//比如jwt构造的token，放入cookie 或者header
+				ParameterBuilder ticketPar = new ParameterBuilder();
+				List<Parameter> pars = new ArrayList<Parameter> ();
+				ticketPar.name("Authorization").description("user ticket")
+						.modelRef(new ModelRef ("string")).parameterType("header")
+						//header中的ticket参数是否必填
+						.required(true).build();
+				//根据每个方法名也知道当前方法在设置什么参数
+				pars.add(ticketPar.build());
+
+				return new Docket(DocumentationType.SWAGGER_2)
+						.apiInfo(apiInfo())
+						.select()
+						//指定当前controller包基础路径
+						.apis(RequestHandlerSelectors.basePackage("com.ictbda.analyse.controller"))
+						.paths(PathSelectors.any())
+						//将参数构造器加入
+						.build().globalOperationParameters(pars);
+			}
+
+			/**
+			 * 构建 api文档的详细信息函数,注意这里的注解引用的是哪个
+			 * @return
+			 */
+			private ApiInfo apiInfo() {
+				return new ApiInfoBuilder ()
+						//页面标题
+						.title("接口文档")
+						//创建人
+						.contact(new Contact ("gushiyu", "http://localhost:7002", "***"))
+						//版本号
+						.version("1.0")
+						//描述
+						.description("API 描述")
+						.build();
+			}
+		}
+	3、security拦截问题，若还有其他被拦截的，可以在此添加
+		@Override
+		public void configure(WebSecurity web) throws Exception {
+			web.ignoring ().antMatchers ("/swagger-ui.html",
+					"/webjars/**","/v1/**",
+					"/swagger-resources/configuration/ui",
+					"/swagger-resources",
+					"/v2/api-docs",
+					"/swagger-resources/configuration/security");
+		}
+	常用注解： 
+- @Api()用于类； 
+表示标识这个类是swagger的资源 
+- @ApiOperation()用于方法； 
+表示一个http请求的操作 
+- @ApiParam()用于方法，参数，字段说明； 
+表示对参数的添加元数据（说明或是否必填等） 
+- @ApiModel()用于类 
+表示对类进行说明，用于参数用实体类接收 
+- @ApiModelProperty()用于方法，字段 
+表示对model属性的说明或者数据操作更改 
+- @ApiIgnore()用于类，方法，方法参数 
+表示这个方法或者类被忽略 
+- @ApiImplicitParam() 用于方法 
+表示单独的请求参数 
+- @ApiImplicitParams() 用于方法，包含多个 @ApiImplicitParam
+
+具体使用举例说明： 
+@Api() 
+用于类；表示标识这个类是swagger的资源 
+tags–表示说明 
+value–也是说明，可以使用tags替代 
+但是tags如果有多个值，会生成多个list
+
+@ApiOperation() 用于方法；表示一个http请求的操作 
+value用于方法描述 
+notes用于提示内容 
+tags可以重新分组（视情况而用） 
+@ApiParam() 用于方法，参数，字段说明；表示对参数的添加元数据（说明或是否必填等） 
+name–参数名 
+value–参数说明 
+required–是否必填
+
+@ApiModel()用于类 ；表示对类进行说明，用于参数用实体类接收 
+value–表示对象名 
+description–描述 
+都可省略 
+@ApiModelProperty()用于方法，字段； 表示对model属性的说明或者数据操作更改 
+value–字段说明 
+name–重写属性名字 
+dataType–重写属性类型 
+required–是否必填 
+example–举例说明 
+hidden–隐藏
+
+@ApiIgnore()用于类或者方法上，可以不被swagger显示在页面上 
+比较简单, 这里不做举例
+
+@ApiImplicitParam() 用于方法 
+表示单独的请求参数 
+@ApiImplicitParams() 用于方法，包含多个 @ApiImplicitParam 
+name–参数ming 
+value–参数说明 
+dataType–数据类型 
+paramType–参数类型 
+example–举例说明

@@ -1,0 +1,10 @@
+docker search activemq
+docker pull webcenter/activemq
+docker run -d --name myactivemq -p 61617:61616 -p 8162:8161 -p 1883:1883 webcenter/activemq:latest
+
+进入
+docker run exec -it myactivemq /bin/bash
+activemq的默认端口为61616
+-p 61617:61616 容器中映射
+-p 8162:8161 web中映射
+-p 1883:1883 mqtt端口映射

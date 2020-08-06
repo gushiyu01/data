@@ -1,0 +1,92 @@
+基本信息：
+	Linux：centos7
+	ElasticSearch: 6.5.1
+	jdk: 1.8
+	IK: 6.5.1(与ES版本保持一致)
+
+安装ES步骤：
+	1、进系统无法显示ip -> 
+		vi /etc/sysconfig/network-script/encfg-ens33	
+		最后一行no -> yes
+	2、关闭防火墙
+		关闭防火墙
+		systemctl stop firewalld
+		禁用防火墙
+		systemctl disable firewalld
+	3、使用xshell上传文件时，提示rz命令找不到 -> 
+		yum install lrzsz
+	4、上传JDK、ES安装包 tar -zxvf ***.tar.gz
+	5、安装JDK
+		vi /etc/profile   最后一行加入：jdk为解压目录
+			export JAVA_HOME=/data/software/jdk
+			export JRE_HOME=${JAVA_HOME}/jre
+			export CLASSPATH=.:${JAVA_HOME}/lib:${JRE_HOME}/lib:$CLASSPATH
+			export JAVA_PATH=${JAVA_HOME}/bin:${JRE_HOME}/bin
+			export PATH=$PATH:${JAVA_PATH}
+		生效：source /etc/profile
+		查看：java -version
+	
+启动可能会出现的错误
+	ERROR: bootstrap checks failed
+	max file descriptors [4096] for elasticsearch process likely too low, increase to at least [65536]
+	原因：无法创建本地文件问题,用户最大可创建文件数太小
+	 
+	解决方案：
+	切换到root用户，编辑limits.conf配置文件， 添加类似如下内容：
+	vi /etc/security/limits.conf
+	添加如下内容:
+	* soft nofile 65536
+	* hard nofile 65536
+	
+	max virtual memory areas vm.max_map_count [65530] likely too low, increase to at least [262144]
+	原因：最大虚拟内存太小
+	解决方案：切换到root用户下，修改配置文件sysctl.conf
+	vi /etc/sysctl.conf
+	添加下面配置：
+	vm.max_map_count=655360
+	并执行命令：
+	sysctl -p
+	然后重新启动elasticsearch，即可启动成功。
+
+tips
+	创建新用户
+	useradd XXX
+	授权
+	chown -R XXX *
+	ES不能以root用户启动
+	su XXX   切换到XXX用户
+	./elasticsearch  启动
+	
+修改配置文件config/elasticsearch.yml
+	ES集群配置信息
+	# 集群名字
+	cluster.name: es-cluster
+	# 节点名称
+	node.name: node-add-1
+	# 是否为主节点默认为true
+	node.master: false
+	# 是否为数据节点默认为true
+	node.data: true
+	# 是否为协调节点默认为true(请求命中的节点，承担当前请求的路由工作)
+	node.ingest: true
+	# 设置ip和端口
+	network.bind_host: 192.168.81.132
+	network.publish_host: 0.0.0.0
+	http.port: 9200
+	# 设置跨域访问（elasticsearch-head使用）
+	http.cors.enabled: true
+	http.cors.allow-origin: "*"
+	http.max_content_length: 500mb
+	# 设置zen发现范围（只需要填写主节点的ip即可）
+	discovery.zen.ping.unicast.hosts: ["192.168.81.130", "192.168.81.131", "192.168.81.129"]
+	discovery.zen.no_master_block: write
+	discovery.zen.fd.ping_timeout: 10s
+	# 设置最小主节点个数，一般为：(master_node_count+1)/2
+	discovery.zen.minimum_master_nodes: 2
+		
+		
+ps -ef | grep elasticsearch
+
+kill -9	***
+
+采用复制服务器的方式，一定要清空data下所有问价
